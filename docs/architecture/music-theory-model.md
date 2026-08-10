@@ -6,6 +6,21 @@
 
 Пакет не знает о пользователях, HTTP, базе данных, React, audio/MIDI browser APIs или конкретных framework types. Одинаковые входные данные и версия алгоритма должны давать одинаковый результат.
 
+## Реализованный фундамент
+
+Первый production-срез предоставляет dependency-free ESM API для:
+
+- pitch class `0..11` и отдельного spelling `letter + accidental` без потери различия `C#`/`Db`;
+- интервала с независимыми `diatonicSteps` и `semitones`;
+- major и natural-minor key с преобразованием `scale degree ↔ spelled pitch`;
+- нормализованного chord vocabulary, absolute chord identity и structured Roman chord;
+- двунаправленного `absolute chords ↔ Roman chords` в явно переданной key;
+- immutable non-empty canonical progression и точной compact JSON serialization schema v1.
+
+Ожидаемые validation/conversion failures возвращаются typed `Result`, а не скрываются fallback-значениями. Публичная граница находится только в `packages/music-theory/src/index.ts`; production build компилируется без DOM/Node globals и не имеет runtime dependencies.
+
+Minor-root calculation использует natural minor. Например, `V7` в minor хранится как пятая ступень с явной dominant-seventh structure: повышенная leading tone является частью структуры аккорда, а не неявной сменой scale/mode.
+
 ## Семантические типы
 
 Точные TypeScript encodings будут выбраны при реализации, но модель должна различать следующие понятия.
@@ -105,6 +120,7 @@ Golden fixtures должны включать major/minor/harmonic-minor, borrow
 - представление secondary functions и modal interchange;
 - критерии equivalence для повторов/ритма;
 - формула confidence и порог ручного подтверждения;
-- точный canonical serialization/hash algorithm.
+- portable canonical hash algorithm и стратегия версий digest;
+- будущие версии canonical schema после появления secondary functions/inversion metadata.
 
 Они уточняются тестовыми примерами до реализации соответствующего поведения.

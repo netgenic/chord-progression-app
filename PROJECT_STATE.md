@@ -4,7 +4,7 @@
 
 ## Current phase
 
-Pre-flight и локальный bootstrap завершены; production-код ещё не начинался. Ветка `main` опубликована в `netgenic/chord-progression-app` и отслеживает `origin/main`.
+Phase 1 — Music theory core. Pre-flight и локальный bootstrap завершены; реализован первый фундаментальный срез музыкальной модели. Ветка `main` опубликована в `netgenic/chord-progression-app` и отслеживает `origin/main`.
 
 ## Completed
 
@@ -17,16 +17,22 @@ Pre-flight и локальный bootstrap завершены; production-код
 - Созданы lockfile, локальный PostgreSQL Compose, GitHub Actions CI, Dependabot и PR template.
 - `pnpm verify` проходит под Node.js `24.18.1`; dependency audit не находит известных уязвимостей.
 - GitHub remote подключён, bootstrap-коммит отправлен в `main`.
+- Создан чистый workspace-пакет `@chord-progression/music-theory` без runtime dependencies.
+- Реализованы spelled pitch classes, интервалы, major/natural-minor keys, structured chord/Roman identities и двунаправленное Roman-преобразование.
+- Зафиксирована canonical schema/serialization v1: non-empty Roman sequence, invariant к абсолютной тональности, с defensive copy и immutable domain values.
+- Добавлены unit, golden и property-based tests (`fast-check`) для транспонирования pitch classes, spelling, Roman round-trip, canonical invariance и deterministic serialization.
+- Canonical serialization v1 закреплена ADR 0005; алгоритм hash намеренно оставлен отдельным решением.
 
 ## In progress
 
-- Активная production-задача отсутствует; pre-flight готов к передаче в следующий этап.
+- Phase 1 продолжается следующими вертикальными срезами музыкального ядра; frontend/API/БД не начаты.
 
 ## Next
 
-1. Начать `packages/music-theory` с формальных типов и инвариантов канонической Roman progression.
-2. Добавить unit, golden и property-based tests до API/UI реализации.
-3. После стабилизации музыкального ядра перейти к минимальной схеме API/БД с first-class пользователями.
+1. Зафиксировать grammar и реализовать free-text chord parser/rendering вместе с inversion, extension и invalid-input fixtures.
+2. Добавить structured transposition progression/chords, затем chord recognition и ranked key detection с явной неоднозначностью.
+3. После определения portable hash algorithm добавить versioned canonical hash и explainable technical tags.
+4. После стабилизации музыкального ядра перейти к минимальной схеме API/БД с first-class пользователями и созданием пользователей.
 
 ## Known issues
 
@@ -44,4 +50,6 @@ Pre-flight и локальный bootstrap завершены; production-код
 ## Current limitations
 
 - Auth provider/session transport, ORM/migrations, web/API frameworks, audio engine и MIDI implementation намеренно не выбраны.
+- Free-text chord/Roman parser, inversion/voicing, chord recognition, key detection, progression hash и technical tags ещё не реализованы.
+- Текущий mode vocabulary ограничен major и natural minor; chromatic degree alteration ограничен двойными accidentals.
 - Integration и E2E suites пока пусты и допускают это только до появления соответствующих слоёв.

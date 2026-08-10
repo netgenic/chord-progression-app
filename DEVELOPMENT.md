@@ -1,6 +1,6 @@
 # Разработка
 
-Этот документ описывает воспроизводимый pre-flight baseline. Прикладные workspace-пакеты, серверы, схема БД, migrations, seed и dataset import пока не реализованы. Команды ниже соответствуют текущему `package.json`; когда появляется новый слой, его команды и этот документ обновляются в одном изменении.
+Этот документ описывает воспроизводимую разработку проекта. Первый прикладной workspace `packages/music-theory` уже реализован; серверы, схема БД, migrations, seed и dataset import пока отсутствуют. Команды ниже соответствуют текущему `package.json`; когда появляется новый слой, его команды и этот документ обновляются в одном изменении.
 
 ## Требования
 
@@ -90,7 +90,7 @@ Compose публикует PostgreSQL только на `127.0.0.1` и испо�
 pnpm dev
 ```
 
-На pre-flight в workspaces ещё нет application `dev` scripts, поэтому команда корректно завершается, не запуская сервер. Она начнёт запускать приложения после добавления их собственных scripts; тогда здесь должны появиться адреса, зависимости и порядок запуска.
+Пока ни один workspace не содержит application `dev` script: музыкальный пакет является библиотекой и не запускает сервер. Команда начнёт запускать приложения после добавления их собственных scripts; тогда здесь должны появиться адреса, зависимости и порядок запуска.
 
 ## Тестирование
 
@@ -108,6 +108,14 @@ pnpm test:watch
 pnpm test:coverage
 pnpm test:integration
 pnpm test:e2e
+```
+
+Только проверки музыкального пакета:
+
+```bash
+pnpm --filter @chord-progression/music-theory typecheck
+pnpm --filter @chord-progression/music-theory build
+pnpm exec vitest run packages/music-theory
 ```
 
 До появления соответствующих слоёв integration и E2E разрешают отсутствие тестов. Это временное свойство bootstrap: новый production behavior должен добавлять тесты в том же изменении. В CI Chromium устанавливается автоматически. Локально после появления первого браузерного теста установите его так:
@@ -150,7 +158,7 @@ TypeScript работает в strict-режиме. Внешние данные 
 pnpm build
 ```
 
-На pre-flight это проверяет project references/TypeScript scaffold; готового web/API artifact ещё нет. Когда появятся приложения, их реальные production builds должны войти в эту root-команду.
+Команда проверяет root project references и собирает declaration/ESM output музыкального пакета. Готового web/API artifact ещё нет. Когда появятся приложения, их реальные production builds должны войти в эту root-команду.
 
 ## Общие quality gates
 
