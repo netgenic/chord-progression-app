@@ -1,0 +1,42 @@
+{
+  "name": "chord-progression-app",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@11.21.0",
+  "engines": {
+    "node": "24.18.1",
+    "pnpm": "11.21.0"
+  },
+  "scripts": {
+    "dev": "pnpm --recursive --parallel --if-present dev",
+    "build": "tsc --build --pretty false",
+    "env:check": "node --env-file-if-exists=.env scripts/validate-environment.ts",
+    "env:check:example": "node --env-file=.env.example scripts/validate-environment.ts",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "lint": "eslint . --max-warnings=0",
+    "typecheck": "tsc -p tsconfig.json --noEmit --pretty false",
+    "test": "pnpm run test:unit && pnpm run test:integration",
+    "test:unit": "vitest run --config vitest.config.ts",
+    "test:watch": "vitest --config vitest.config.ts",
+    "test:coverage": "vitest run --config vitest.config.ts --coverage",
+    "test:integration": "vitest run --config vitest.integration.config.ts --passWithNoTests",
+    "test:e2e": "playwright test --pass-with-no-tests",
+    "check": "pnpm run format:check && pnpm run lint && pnpm run typecheck && pnpm run env:check:example && pnpm run test:unit",
+    "verify": "pnpm run check && pnpm run test:integration && pnpm run build && pnpm run test:e2e",
+    "db:up": "docker compose up -d --wait postgres",
+    "db:down": "docker compose down"
+  },
+  "devDependencies": {
+    "@eslint/js": "10.0.1",
+    "@playwright/test": "1.62.1",
+    "@types/node": "24.13.3",
+    "@vitest/coverage-v8": "4.1.10",
+    "eslint": "10.8.1",
+    "prettier": "3.9.6",
+    "typescript": "6.0.3",
+    "typescript-eslint": "8.66.0",
+    "vitest": "4.1.10"
+  }
+}
