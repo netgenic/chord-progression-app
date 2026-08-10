@@ -1,5 +1,6 @@
-import { CHORD_KINDS, type ChordKind, type ChordStructure } from './model.js';
+import { CHORD_KINDS, type ChordExtension, type ChordKind, type ChordStructure } from './model.js';
 import { failure, success, type Result, type ValidationError } from './result.js';
+import { hasExactOwnKeys, isRuntimeRecord } from './runtime-shape.js';
 
 const noExtension = Object.freeze({ kind: 'none' } as const);
 const majorSeventh = Object.freeze({ kind: 'seventh', quality: 'major' } as const);
@@ -29,4 +30,65 @@ export const createChordStructure = (kind: string): Result<ChordStructure, Valid
   }
 
   return success(CHORD_STRUCTURES[kind as ChordKind]);
+};
+
+/** Internal structural comparison used to recover a supported chord kind. */
+export const extensionsEqual = (left: ChordExtension, right: ChordExtension): boolean => {
+  if (left.kind !== right.kind) {
+    return false;
+  }
+
+  switch (left.kind) {
+    case 'none':
+      return true;
+    case 'seventh':
+      return right.kind === 'seventh' && left.quality === right.quality;
+    case 'added-tone':
+      return (
+        right.kind === 'added-tone' &&
+        left.degree === right.degree &&
+        left.alteration === right.alteration
+      );
+  }
+};
+
+/** Internal reverse lookup for structurally typed values at package boundaries. */
+export const chordKindOf = (structure: unknown): ChordKind | undefined => {
+  if (!isRuntimeRecord(structure) || !hasExactOwnKeys(structure, ['quality', 'extension'])) {
+    return undefined;
+  }
+
+  const extension = structure['extension'];
+  if (!isRuntimeRecord(extension)) {
+    return undefined;
+  }
+
+  switch (extension['kind']) {
+    case 'none':
+      if (!hasExactOwnKeys(extension, ['kind'])) {
+        return undefined;
+      }
+      break;
+    case 'seventh':
+      if (!hasExactOwnKeys(extension, ['kind', 'quality'])) {
+        return undefined;
+      }
+      break;
+    case 'added-tone':
+      if (!hasExactOwnKeys(extension, ['kind', 'degree', 'alteration'])) {
+        return undefined;
+      }
+      break;
+    default:
+      return undefined;
+  }
+
+  return CHORD_KINDS.find((kind) => {
+    const supported = CHORD_STRUCTURES[kind];
+
+    return (
+      structure['quality'] === supported.quality &&
+      extensionsEqual(extension as ChordExtension, supported.extension)
+    );
+  });
 };

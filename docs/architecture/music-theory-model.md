@@ -14,6 +14,8 @@
 - интервала с независимыми `diatonicSteps` и `semitones`;
 - major и natural-minor key с преобразованием `scale degree ↔ spelled pitch`;
 - нормализованного chord vocabulary, absolute chord identity и structured Roman chord;
+- строгого chord-symbol parser/renderer v1 с отдельным explicit slash bass;
+- spelling-preserving chord/progression transposition через `Interval`;
 - двунаправленного `absolute chords ↔ Roman chords` в явно переданной key;
 - immutable non-empty canonical progression и точной compact JSON serialization schema v1.
 
@@ -37,9 +39,13 @@ Pitch class задаёт высотный класс, а spelling сохраня
 
 Chord identity состоит из root/spelling и нормализованных quality/extensions. Поддерживаемый MVP vocabulary включает major, minor, diminished, augmented, sus2, sus4, major7, minor7, dominant7, diminished7, half-diminished7, add9 и minor-add9.
 
+Chord-symbol grammar v1 задаёт этим видам единственные canonical ASCII suffixes. Она case-sensitive, не обрезает whitespace и сохраняет accidentals до двойных. Aliases пока отклоняются; будущая alias policy должна быть одной операцией внутри music-theory, а не дублироваться в input/import adapters.
+
 ### Inversion и voicing
 
-Inversion описывает chord member в bass; voicing — конкретные pitches и октавы. Они не меняют harmonic chord identity. Например, ноты `G C E` распознаются как отображаемый `C/E`, но harmonic identity остаётся C major.
+`ChordSymbol` хранит harmonic identity и optional slash bass раздельно. Slash bass ещё не является доказанной inversion: она может совпадать с root, быть chord tone или non-chord/pedal bass. Voicing — отдельные конкретные pitches и октавы; ни bass, ни voicing не меняют harmonic chord identity.
+
+В исходной спецификации пример `G C E => C/E` конфликтует с указанным первым/bass pitch: при bass G корректный symbol — `C/G`, тогда как `E G C => C/E`. Будущий recognition slice обязан закрепить физический bass golden tests.
 
 ### Key и mode
 
@@ -115,7 +121,7 @@ Golden fixtures должны включать major/minor/harmonic-minor, borrow
 
 ## Известные открытые вопросы
 
-- полный vocabulary chord symbols и modes;
+- aliases/Unicode и extended chord-symbol grammar после строгой v1, а также дополнительные modes;
 - политика предпочтительного enharmonic spelling;
 - представление secondary functions и modal interchange;
 - критерии equivalence для повторов/ритма;

@@ -1,6 +1,6 @@
 # Project state
 
-Обновлено: 2026-08-10
+Обновлено: 2026-08-11
 
 ## Current phase
 
@@ -22,6 +22,10 @@ Phase 1 — Music theory core. Pre-flight и локальный bootstrap зав
 - Зафиксирована canonical schema/serialization v1: non-empty Roman sequence, invariant к абсолютной тональности, с defensive copy и immutable domain values.
 - Добавлены unit, golden и property-based tests (`fast-check`) для транспонирования pitch classes, spelling, Roman round-trip, canonical invariance и deterministic serialization.
 - Canonical serialization v1 закреплена ADR 0005; алгоритм hash намеренно оставлен отдельным решением.
+- Зафиксирована строгая chord-symbol grammar v1 для всех 13 MVP chord kinds: canonical ASCII suffixes, accidentals до двойных и optional slash bass.
+- Реализованы `parseChord`/`renderChord`, immutable `ChordSymbol` с bass вне harmonic identity и spelling-preserving transposition аккордов/прогрессий через явный диатонический+хроматический интервал.
+- Chord-symbol grammar и уточнения неоднозначностей спецификации закреплены ADR 0006.
+- Добавлены exact invalid fixtures, curated enharmonic/slash-bass/transposition goldens и property tests для parse/render и interval/inverse round-trip без filtering.
 
 ## In progress
 
@@ -29,10 +33,10 @@ Phase 1 — Music theory core. Pre-flight и локальный bootstrap зав
 
 ## Next
 
-1. Зафиксировать grammar и реализовать free-text chord parser/rendering вместе с inversion, extension и invalid-input fixtures.
-2. Добавить structured transposition progression/chords, затем chord recognition и ranked key detection с явной неоднозначностью.
-3. После определения portable hash algorithm добавить versioned canonical hash и explainable technical tags.
-4. После стабилизации музыкального ядра перейти к минимальной схеме API/БД с first-class пользователями и созданием пользователей.
+1. Реализовать chord recognition из spelled notes с несколькими кандидатами, explicit bass и исправленными inversion fixtures.
+2. Добавить ranked key detection с confidence/evidence и пользовательским подтверждением неоднозначности.
+3. Зафиксировать Roman-text grammar, затем определить portable hash algorithm и добавить versioned canonical hash.
+4. Добавить explainable technical tags и только после стабилизации ядра перейти к API/БД с first-class пользователями и созданием пользователей.
 
 ## Known issues
 
@@ -50,6 +54,7 @@ Phase 1 — Music theory core. Pre-flight и локальный bootstrap зав
 ## Current limitations
 
 - Auth provider/session transport, ORM/migrations, web/API frameworks, audio engine и MIDI implementation намеренно не выбраны.
-- Free-text chord/Roman parser, inversion/voicing, chord recognition, key detection, progression hash и technical tags ещё не реализованы.
+- Roman-text parser, inversion classification/voicing, chord recognition, key detection, progression hash и technical tags ещё не реализованы.
+- Chord-symbol v1 намеренно не принимает aliases, Unicode accidentals, altered dominants или extensions вне текущих 13 kinds; slash bass сохраняется, но пока не классифицируется как inversion/non-chord bass.
 - Текущий mode vocabulary ограничен major и natural minor; chromatic degree alteration ограничен двойными accidentals.
 - Integration и E2E suites пока пусты и допускают это только до появления соответствующих слоёв.

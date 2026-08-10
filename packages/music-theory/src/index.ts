@@ -10,6 +10,7 @@ export {
   type ChordExtension,
   type ChordKind,
   type ChordQuality,
+  type ChordSymbol,
   type ChordStructure,
   type DegreeAlteration,
   type Interval,
@@ -22,6 +23,15 @@ export {
   type ScaleDegree,
   type SpelledPitchClass,
 } from './model.js';
+export { createAbsoluteChord } from './chord.js';
+export {
+  CHORD_SYMBOL_MAX_LENGTH,
+  createChordSymbol,
+  parseChord,
+  renderChord,
+  transposeChord,
+  transposeProgression,
+} from './chord-symbol.js';
 export {
   createInterval,
   createSpelledPitchClass,
@@ -32,7 +42,6 @@ export {
 export { createKey, scaleDegreeToSpelledPitch, spelledPitchToScaleDegree } from './key.js';
 export type { ScaleDegreeInput } from './key.js';
 export {
-  createAbsoluteChord,
   createRomanChord,
   fromRomanNumerals,
   realizeRomanChord,
@@ -45,4 +54,12 @@ export {
   realizeCanonicalProgression,
   serializeCanonicalProgression,
 } from './canonical.js';
-export type { ConversionError, Result, ValidationError } from './result.js';
+export type {
+  ChordParseError,
+  ChordParseErrorReason,
+  ChordTranspositionError,
+  ConversionError,
+  ProgressionTranspositionError,
+  Result,
+  ValidationError,
+} from './result.js';

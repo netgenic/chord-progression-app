@@ -60,6 +60,12 @@ export interface AbsoluteChordIdentity {
   readonly structure: ChordStructure;
 }
 
+/** A renderable chord keeps slash-bass notation outside harmonic identity. */
+export interface ChordSymbol {
+  readonly identity: AbsoluteChordIdentity;
+  readonly bass: SpelledPitchClass | null;
+}
+
 export interface RomanChord {
   readonly degree: ScaleDegree;
   readonly alteration: DegreeAlteration;
