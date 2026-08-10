@@ -66,6 +66,39 @@ export interface ChordSymbol {
   readonly bass: SpelledPitchClass | null;
 }
 
+/** Complete sounding pitch classes plus an explicitly observed physical bass, when known. */
+export interface ChordRecognitionInput {
+  readonly notes: readonly SpelledPitchClass[];
+  readonly bass: SpelledPitchClass | null;
+}
+
+export type ChordToneRole = 'second' | 'third' | 'fourth' | 'fifth' | 'seventh' | 'ninth';
+
+/** Bass relation is separate from both harmonic identity and slash-symbol presentation. */
+export type ChordBassClassification =
+  | Readonly<{ kind: 'unknown' }>
+  | Readonly<{ kind: 'root-position' }>
+  | Readonly<{ kind: 'inversion'; chordTone: ChordToneRole }>
+  | Readonly<{ kind: 'non-chord' }>;
+
+export interface ChordRecognitionEvidence {
+  readonly pitchSet: 'exact' | 'without-non-chord-bass';
+  readonly spellingMismatches: number;
+}
+
+export interface ChordRecognitionCandidate {
+  readonly kind: ChordKind;
+  readonly symbol: ChordSymbol;
+  readonly bassClassification: ChordBassClassification;
+  readonly evidence: ChordRecognitionEvidence;
+}
+
+export interface ChordRecognition {
+  readonly notes: NonEmptyReadonlyArray<SpelledPitchClass>;
+  readonly bass: SpelledPitchClass | null;
+  readonly candidates: readonly ChordRecognitionCandidate[];
+}
+
 export interface RomanChord {
   readonly degree: ScaleDegree;
   readonly alteration: DegreeAlteration;

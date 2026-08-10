@@ -16,6 +16,7 @@
 - нормализованного chord vocabulary, absolute chord identity и structured Roman chord;
 - строгого chord-symbol parser/renderer v1 с отдельным explicit slash bass;
 - spelling-preserving chord/progression transposition через `Interval`;
+- exact chord recognition v1 с explicit physical bass, несколькими candidates и spelling evidence;
 - двунаправленного `absolute chords ↔ Roman chords` в явно переданной key;
 - immutable non-empty canonical progression и точной compact JSON serialization schema v1.
 
@@ -45,7 +46,14 @@ Chord-symbol grammar v1 задаёт этим видам единственны�
 
 `ChordSymbol` хранит harmonic identity и optional slash bass раздельно. Slash bass ещё не является доказанной inversion: она может совпадать с root, быть chord tone или non-chord/pedal bass. Voicing — отдельные конкретные pitches и октавы; ни bass, ни voicing не меняют harmonic chord identity.
 
-В исходной спецификации пример `G C E => C/E` конфликтует с указанным первым/bass pitch: при bass G корректный symbol — `C/G`, тогда как `E G C => C/E`. Будущий recognition slice обязан закрепить физический bass golden tests.
+В исходной спецификации пример `G C E => C/E` конфликтует с physical bass: при bass G корректный symbol — `C/G`, тогда как при bass E получается `C/E`. Recognition fixtures закрепляют оба случая через отдельное поле bass, а не через порядок нот.
+
+`detectChord` принимает полный unordered набор spelled pitch classes и отдельный
+`bass: SpelledPitchClass | null`; порядок массива никогда не используется для вывода bass.
+Результат сохраняет observation отдельно от candidates. Для каждого candidate bass
+классифицируется как unknown, root position, конкретный chord tone либо non-chord, а slash
+presentation строится независимо от identity. Настоящий voicing остаётся будущим octave-aware
+типом, а не переименованным массивом pitch classes.
 
 ### Key и mode
 
@@ -91,12 +99,19 @@ Hash MVP учитывает mode, порядок и harmonic identity chord step
 
 Key detection возвращает ранжированный список, не единственное предположение. Каждый результат содержит confidence; желательно также сохранять explainable evidence. Threshold пользовательского подтверждения является application/UI policy, а не скрытой частью математического типа.
 
-Chord recognition может вернуть несколько кандидатов для неоднозначного набора notes. Алгоритм отделяет:
+Chord recognition возвращает все exact-template candidates для неоднозначного набора notes.
+Версия v1 удаляет doublings, но не игнорирует extensions или произвольные extra tones. Только
+при отсутствии full-set match explicit bass может быть отделён как non-chord tone, после чего
+upper structure обязан полностью совпасть с поддерживаемым шаблоном. Алгоритм отделяет:
 
 - chord identity;
 - inversion/bass;
-- исходный voicing;
-- confidence/diagnostics.
+- исходное pitch-class observation;
+- deterministic evidence: pitch-set path и spelling mismatches.
+
+Порядок candidates стабилен и не зависит от permutation входа, но не является вероятностью.
+Numeric confidence остаётся будущей context-aware policy: без key, temporal context и
+calibration такое число создавало бы ложную точность.
 
 ## Technical tags
 

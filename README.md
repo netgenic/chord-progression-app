@@ -27,4 +27,4 @@ pnpm verify
 - `scripts/importers` — проверяемый и идемпотентный импорт источников;
 - `docs` — продукт, архитектура, ADR и правила разработки.
 
-Production-разработка идёт в `packages/music-theory`: реализованы structured pitch/key/Roman values, chord-symbol grammar v1, spelling-preserving transposition и canonical serialization v1. Распознавание, key detection и hashing будут добавляться отдельными проверяемыми срезами до начала frontend-разработки.
+Production-разработка идёт в `packages/music-theory`: реализованы structured pitch/key/Roman values, chord-symbol grammar v1, exact chord recognition, spelling-preserving transposition и canonical serialization v1. Key detection и hashing будут добавляться отдельными проверяемыми срезами до начала frontend-разработки.

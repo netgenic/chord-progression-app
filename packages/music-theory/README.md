@@ -10,6 +10,7 @@ The current implementation covers:
 - structured chord identity and Roman chords;
 - strict canonical ASCII chord-symbol parsing/rendering with slash bass kept outside identity;
 - spelling-preserving chord and progression transposition through explicit intervals;
+- exact chord recognition for all 13 kinds with explicit physical bass and ambiguous candidates;
 - Roman-to-absolute conversion in an explicit key and the inverse conversion;
 - validated, non-empty canonical progressions and deterministic versioned serialization.
 
@@ -24,7 +25,12 @@ whitespace, aliases and Unicode accidentals. Transposition requires both diatoni
 semitones so callers choose spelling explicitly instead of triggering a hidden enharmonic
 heuristic.
 
-Roman-text parsing, chord recognition, key detection, canonical hashing and technical tags
+`detectChord` accepts an unordered complete set of spelled pitch classes plus a separately
+known physical bass (or `null`). It ignores doublings, preserves every exact template candidate,
+reports spelling evidence, and uses a narrowly marked non-chord-bass fallback only when no full
+set matches. It does not infer bass from array order or invent probabilistic confidence.
+
+Roman-text parsing, key detection, canonical hashing and technical tags
 are intentionally separate follow-up slices. Their unresolved notation and ambiguity
 policies are documented in `docs/architecture/music-theory-model.md`.
 

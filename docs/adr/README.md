@@ -25,5 +25,6 @@ ADR фиксируют архитектурно значимые решения,
 - [0004 — PostgreSQL](0004-postgresql.md)
 - [0005 — canonical serialization v1](0005-canonical-serialization-v1.md)
 - [0006 — chord-symbol grammar v1](0006-chord-symbol-grammar-v1.md)
+- [0007 — exact chord recognition v1](0007-exact-chord-recognition-v1.md)
 
 Следующие решения пока намеренно не приняты: canonical hash algorithm, auth provider/session transport, ORM/migration tool, HTTP/frontend frameworks, UI toolkit, audio engine/assets и MIDI helper/support policy. Для каждого требуется отдельный ADR перед соответствующей реализацией.

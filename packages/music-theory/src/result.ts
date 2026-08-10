@@ -10,6 +10,10 @@ export type ValidationError =
   | Readonly<{ code: 'invalid-scale-degree'; received: number }>
   | Readonly<{ code: 'invalid-degree-alteration'; received: number }>
   | Readonly<{ code: 'invalid-chord-kind'; received: string }>
+  | Readonly<{
+      code: 'invalid-spelled-pitch-value';
+      reason: 'not-object' | 'unexpected-fields' | 'invalid-field-types';
+    }>
   | Readonly<{ code: 'invalid-chord-bass'; received: string }>
   | Readonly<{
       code: 'invalid-chord-value';
@@ -54,6 +58,27 @@ export type ChordParseError =
       reason: 'invalid-type';
       receivedType: string;
     }>;
+
+export type ChordRecognitionError =
+  | ValidationError
+  | Readonly<{
+      code: 'invalid-chord-recognition-input';
+      reason: 'not-object' | 'missing-fields' | 'unexpected-fields';
+    }>
+  | Readonly<{
+      code: 'invalid-chord-recognition-notes';
+      reason: 'not-array' | 'empty';
+    }>
+  | Readonly<{
+      code: 'chord-recognition-note-error';
+      index: number;
+      cause: ValidationError;
+    }>
+  | Readonly<{
+      code: 'chord-recognition-bass-error';
+      cause: ValidationError;
+    }>
+  | Readonly<{ code: 'chord-recognition-bass-not-present' }>;
 
 export type ConversionError =
   | ValidationError

@@ -8,10 +8,16 @@ export {
   type CanonicalProgressionInput,
   type CanonicalProgressionV1,
   type ChordExtension,
+  type ChordBassClassification,
   type ChordKind,
   type ChordQuality,
+  type ChordRecognition,
+  type ChordRecognitionCandidate,
+  type ChordRecognitionEvidence,
+  type ChordRecognitionInput,
   type ChordSymbol,
   type ChordStructure,
+  type ChordToneRole,
   type DegreeAlteration,
   type Interval,
   type Key,
@@ -24,6 +30,7 @@ export {
   type SpelledPitchClass,
 } from './model.js';
 export { createAbsoluteChord } from './chord.js';
+export { detectChord } from './chord-recognition.js';
 export {
   CHORD_SYMBOL_MAX_LENGTH,
   createChordSymbol,
@@ -57,6 +64,7 @@ export {
 export type {
   ChordParseError,
   ChordParseErrorReason,
+  ChordRecognitionError,
   ChordTranspositionError,
   ConversionError,
   ProgressionTranspositionError,
